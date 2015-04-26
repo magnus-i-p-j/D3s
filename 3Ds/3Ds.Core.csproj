@@ -42,6 +42,12 @@
     <Compile Include="ValueObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3Ds.Utils\3Ds.Utils.csproj">
+      <Project>{3f810df3-7567-4f6a-af20-eee32a5a018c}</Project>
+      <Name>3Ds.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

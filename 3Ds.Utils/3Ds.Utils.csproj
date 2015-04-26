@@ -39,8 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoTypeInspector.cs" />
-    <Compile Include="AutoTypeInspectorException.cs" />
+    <Compile Include="AutoType\AutoTypeInspector.cs" />
+    <Compile Include="AutoType\AutoTypeInspectorException.cs" />
+    <Compile Include="AutoType\PropertyDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

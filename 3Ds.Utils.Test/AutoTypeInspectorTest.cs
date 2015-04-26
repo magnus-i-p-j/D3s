@@ -1,4 +1,5 @@
 ﻿using _3Ds.Utils;
+using _3Ds.Utils.AutoType;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,18 @@ namespace _3Ds.Utils.Test
         public void Should_extract_all_getters()
         {
             var inspector = new AutoTypeInspector<AClass>();
-            Assert.That(inspector.GetGetter<int>("IntProperty"), Is.Not.Null);
-            Assert.That(inspector.GetGetter<bool>("BoolProperty"), Is.Not.Null);
-            Assert.That(inspector.GetGetter<string>("StringProperty"), Is.Not.Null);
+            Assert.That(inspector.GetGetter("IntProperty"), Is.Not.Null);
+            Assert.That(inspector.GetGetter("BoolProperty"), Is.Not.Null);
+            Assert.That(inspector.GetGetter("StringProperty"), Is.Not.Null);
+        }
+
+        [Test]
+        public void Should_extract_all_setters()
+        {
+            var inspector = new AutoTypeInspector<AClass>();
+            Assert.That(inspector.GetSetter("IntProperty"), Is.Not.Null);
+            Assert.That(inspector.GetSetter("BoolProperty"), Is.Not.Null);
+            Assert.That(inspector.GetSetter("StringProperty"), Is.Not.Null);
         }
 
     }

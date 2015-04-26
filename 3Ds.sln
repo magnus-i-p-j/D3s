@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3Ds.Utils", "3Ds.Utils\3Ds.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3Ds.Utils.Test", "3Ds.Utils.Test\3Ds.Utils.Test.csproj", "{736B5143-E6BF-4017-9453-10078928F647}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2Ds", "2Ds", "{383A9A12-3547-4BDA-AD1B-DC49C607313B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
