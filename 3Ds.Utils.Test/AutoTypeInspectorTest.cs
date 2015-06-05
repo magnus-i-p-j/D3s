@@ -24,19 +24,29 @@ namespace _3Ds.Utils.Test
         public void Should_extract_all_getters()
         {
             var inspector = new AutoTypeInspector<AClass>();
-            Assert.That(inspector.GetGetter("IntProperty"), Is.Not.Null);
-            Assert.That(inspector.GetGetter("BoolProperty"), Is.Not.Null);
-            Assert.That(inspector.GetGetter("StringProperty"), Is.Not.Null);
+            Assert.That(inspector.Getter("IntProperty"), Is.Not.Null);
+            Assert.That(inspector.Getter("BoolProperty"), Is.Not.Null);
+            Assert.That(inspector.Getter("StringProperty"), Is.Not.Null);
         }
 
         [Test]
         public void Should_extract_all_setters()
         {
             var inspector = new AutoTypeInspector<AClass>();
-            Assert.That(inspector.GetSetter("IntProperty"), Is.Not.Null);
-            Assert.That(inspector.GetSetter("BoolProperty"), Is.Not.Null);
-            Assert.That(inspector.GetSetter("StringProperty"), Is.Not.Null);
+            Assert.That(inspector.Setter("IntProperty"), Is.Not.Null);
+            Assert.That(inspector.Setter("BoolProperty"), Is.Not.Null);
+            Assert.That(inspector.Setter("StringProperty"), Is.Not.Null);
         }
+
+        [Test]
+        public void Should_create_a_new_instance()
+        {
+            var inspector = new AutoTypeInspector<AClass>();
+            var clone = inspector.CreateInstance();
+            Assert.That(clone, Is.InstanceOf<AClass>());
+        }
+
+
 
     }
 }

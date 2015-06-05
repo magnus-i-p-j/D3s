@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{704AEB60-EB50-46AE-816C-FFB51E956545}</ProjectGuid>
+    <ProjectGuid>{A6E89680-421F-4EF9-B5F2-8F11F5488CB6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_3Ds.Core</RootNamespace>
-    <AssemblyName>3Ds</AssemblyName>
+    <RootNamespace>_3Ds.Core.Test2</RootNamespace>
+    <AssemblyName>3Ds.Core.Test2</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>a5ea41f2</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>5a13f5ed</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite">
+    <Reference Include="System.Data.SQLite, Version=1.0.97.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.97.0\lib\net45\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -43,27 +47,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDataContext.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="IUnitOfWorkFactory.cs" />
-    <Compile Include="Specification.cs" />
-    <Compile Include="SQLite\SQLiteRepository.cs" />
-    <Compile Include="SQLite\SQLiteUoW.cs" />
-    <Compile Include="SQLite\SQLiteUoWFactory.cs" />
-    <Compile Include="UnitOfWorkException.cs" />
-    <Compile Include="ValueObject.cs" />
+    <Compile Include="SQLite\SQLiteUoWTest.cs" />
+    <Compile Include="ValueObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3Ds.Utils\3Ds.Utils.csproj">
-      <Project>{3f810df3-7567-4f6a-af20-eee32a5a018c}</Project>
-      <Name>3Ds.Utils</Name>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3Ds\3Ds.Core.csproj">
+      <Project>{704aeb60-eb50-46ae-816c-ffb51e956545}</Project>
+      <Name>3Ds.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets')" />

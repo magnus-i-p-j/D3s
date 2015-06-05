@@ -21,8 +21,8 @@ namespace _3Ds.Core
                
         public object Clone()
         {
-            var clone = (T)Activator.CreateInstance(typeof(T));            
-            foreach (var property in _inspector.PropertyDefinitions)
+            var clone = _inspector.CreateInstance();            
+            foreach (var property in _inspector.Properties)
             {               
                 var getter = property.Getter;
                 var value = getter((T)this);
@@ -39,17 +39,17 @@ namespace _3Ds.Core
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            throw new NotImplementedException();
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            throw new NotImplementedException();
         }
 
         public override string ToString()
         {
-            return base.ToString();
+            throw new NotImplementedException();
         }
     }
 }

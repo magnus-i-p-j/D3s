@@ -48,7 +48,12 @@ namespace _3Ds.Utils.AutoType
 
         public Type Type { get { return _type.Value; } }
 
-        public List<PropertyDefinition<TInstance>> PropertyDefinitions
+        public TInstance CreateInstance(params object[] args)
+        {
+            return (TInstance)Activator.CreateInstance(typeof(TInstance), args); 
+        }
+
+        public List<PropertyDefinition<TInstance>> Properties
         {
             get
             {
@@ -56,7 +61,7 @@ namespace _3Ds.Utils.AutoType
             }
         }
 
-        private Dictionary<string, PropertyDefinition<TInstance>> Properties
+        private Dictionary<string, PropertyDefinition<TInstance>> PropertyDefinitions
         {
             get
             {
@@ -64,17 +69,9 @@ namespace _3Ds.Utils.AutoType
             }
         }
 
-        public AutoTypeInspector<TInstance> RegisterProperty<TValue>(string name,
-            Func<TInstance, object> get, Action<TInstance, object> set, Func<object, object, bool> equals = null)
-        {
-            var definition = new PropertyDefinition<TInstance>
-            {
-                Name = name,
-                Getter = get,
-                Setter = set,
-                EqualTo = equals
-            };
-            Properties[name] = definition;
+        public AutoTypeInspector<TInstance> OverrideProperty<TValue>(PropertyDefinition<TInstance> definition)
+        {            
+            PropertyDefinitions[definition.Name] = definition;
             return this;
         }
 
@@ -82,7 +79,7 @@ namespace _3Ds.Utils.AutoType
         {
             get
             {
-                return Properties.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Getter).ToList();
+                return PropertyDefinitions.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Getter).ToList();
             }
         }
 
@@ -90,14 +87,14 @@ namespace _3Ds.Utils.AutoType
         {
             get
             {
-                return Properties.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Setter).ToList();
+                return PropertyDefinitions.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Setter).ToList();
             }
         }
 
-        public Func<TInstance, object> GetGetter(string name)
+        public Func<TInstance, object> Getter(string name)
         {
             PropertyDefinition<TInstance> definition;
-            Properties.TryGetValue(name, out definition);            
+            PropertyDefinitions.TryGetValue(name, out definition);            
             if (definition == null)
             {
                 throw new AutoTypeInspectorException(String.Format("No getter found named {0}", name));
@@ -106,10 +103,10 @@ namespace _3Ds.Utils.AutoType
             return definition.Getter;
         }
 
-        public Action<TInstance, object> GetSetter(string name)
+        public Action<TInstance, object> Setter(string name)
         {
             PropertyDefinition<TInstance> definition;
-            Properties.TryGetValue(name, out definition);
+            PropertyDefinitions.TryGetValue(name, out definition);
             if (definition == null)
             {
                 throw new AutoTypeInspectorException(String.Format("No setter found named {0}", name));
