@@ -5,17 +5,16 @@ using System.Text;
 
 namespace _3Ds.Core.SQLite
 {
-    
-    public class SQLiteRepository<T> : IRepository<T> where T: IEntity
+    public class SQLiteDefaultRepository<T> : IRepository<T>
+        where T: IEntity
     {
+        private SQLiteUoW uow;
 
-        private SQLiteUoW _uow;
-
-        public SQLiteRepository(SQLiteUoW uow)
+        public SQLiteDefaultRepository(SQLiteUoW uow)
         {
-            _uow = uow;
+            // TODO: Complete member initialization
+            this.uow = uow;
         }
-
 
         public IEnumerable<T> All()
         {

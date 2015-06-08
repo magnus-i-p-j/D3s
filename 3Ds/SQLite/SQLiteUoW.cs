@@ -12,6 +12,7 @@ namespace _3Ds.Core.SQLite
 
         private SQLiteConnection _connection;
         private List<SQLiteCommand> _commands;
+        private SQLiteRepositoryFactory _factory;
         private Dictionary<Type, dynamic> _repositories;
 
         internal SQLiteUoW(SQLiteConnection connection)
@@ -19,10 +20,10 @@ namespace _3Ds.Core.SQLite
             _connection = connection;
         }
 
-        internal void AddRepository<T>(SQLiteRepository<T> repo)
-            where T : IEntity
+        public SQLiteUoW(SQLiteConnection connection, SQLiteRepositoryFactory factory)
         {
-
+            _connection = connection;
+            _factory = factory;
         }
 
         internal void AddCommand(SQLiteCommand command)
@@ -32,12 +33,12 @@ namespace _3Ds.Core.SQLite
 
         public IRepository<T> GetRepository<T>() where T : IEntity
         {
-            throw new NotImplementedException();
+            return _factory.CreateRepository<T>(this);
         }
 
         public IEnumerable<Type> KnownTypes
         {
-            get { throw new NotImplementedException(); }
+            get { return _factory.KnownTypes; }
         }
 
         public void AcceptChanges()

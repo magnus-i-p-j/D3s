@@ -10,6 +10,6 @@ namespace _3Ds.Core
     {
         IRepository<T> GetRepository<T>() where T : IEntity;
         IEnumerable<Type> KnownTypes { get; }        
-        void AcceptChanges();        
-    }
+        void AcceptChanges();           
+    }    
 }

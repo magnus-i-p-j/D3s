@@ -47,11 +47,12 @@
     <Compile Include="IEntity.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="IUnitOfWorkFactory.cs" />
+    <Compile Include="NoRepositoryFoundException.cs" />
     <Compile Include="Specification.cs" />
+    <Compile Include="SQLite\SQLiteDefaultRepository.cs" />
     <Compile Include="SQLite\SQLiteRepository.cs" />
+    <Compile Include="SQLite\SQLiteRepositoryFactory.cs" />
     <Compile Include="SQLite\SQLiteUoW.cs" />
-    <Compile Include="SQLite\SQLiteUoWFactory.cs" />
     <Compile Include="UnitOfWorkException.cs" />
     <Compile Include="ValueObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

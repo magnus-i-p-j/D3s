@@ -1,4 +1,5 @@
 ﻿using _3Ds.Core.SQLite;
+using FakeItEasy;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace _3Ds.Core.Test2
 {
+    //These test should be passed by all uows.
     [TestFixture]
     public class SQLiteUoWTest
     {
@@ -15,36 +17,39 @@ namespace _3Ds.Core.Test2
         public class MockEntity : IEntity
         {
 
-            public Guid Id
-            {
-                get
-                {
-                    throw new NotImplementedException();
-                }
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            public Guid Id { get; set; }
         }
 
-        public class MockRepository : SQLiteRepository<MockEntity>{
-            public MockRepository(SQLiteUoW uow): base(uow)
-            {
 
-            }
-        }
-       
         [Test]
-        public void Should_get_repository()
+        [ExpectedException(typeof(NoRepositoryFoundException))]
+        public void Should_throw_exception_when_cannot_find_repository()
         {
-            var factory = new SQLiteUoWFactory("");
-            factory.ConfigureRepository<MockRepository, MockEntity>();
-            var uow = factory.CreateUnitOfWork();            
-            var repo = uow.GetRepository<MockEntity>();
-            Assert.That(repo, Is.Not.Null);
+            var factory = A.Fake<SQLiteRepositoryFactory>();
+            var uow = new SQLiteUoW(null, factory);
+            var repo = uow.GetRepository<MockEntity>();            
         }
 
+        [Test]
+        public void Should_call_get_repository_on_factory()
+        {
+            var factory = A.Fake<SQLiteRepositoryFactory>();
+            factory.ConfigureRepository<MockEntity>();
+            var uow = new SQLiteUoW(null, factory);            
+            var repo = uow.GetRepository<MockEntity>();
+            A.CallTo(() => factory.CreateRepository<MockEntity>(uow)).MustHaveHappened();            
+        }
+
+        [Test]
+        public void Should_call_get_repository_on_factory_once()
+        {
+            var factory = A.Fake<SQLiteRepositoryFactory>();
+            var uow = new SQLiteUoW(null, factory);
+            var repo_1 = uow.GetRepository<MockEntity>();
+            var repo_2 = uow.GetRepository<MockEntity>();
+            A.CallTo(() => factory.CreateRepository<MockEntity>(uow)).MustHaveHappened(Repeated.Exactly.Once);
+            Assert.That(repo_1, Is.EqualTo(repo_2));
+        }
         
     }
 }
