@@ -8,12 +8,17 @@ namespace _3Ds.Core.SQLite
     public class SQLiteDefaultRepository<T> : IRepository<T>
         where T: IEntity
     {
-        private SQLiteUoW uow;
+        private SQLiteUoW _uow;
 
+        /// <summary>
+        /// The default repository assumes that the entity is stored in a table with the same name as the class. That all values can be mapped and so on.
+        ///
+        /// </summary>
+        /// <param name="uow"></param>
         public SQLiteDefaultRepository(SQLiteUoW uow)
         {
             // TODO: Complete member initialization
-            this.uow = uow;
+            this._uow = uow;
         }
 
         public IEnumerable<T> All()

@@ -10,20 +10,19 @@ namespace _3Ds.Core.SQLite
     public class SQLiteUoW: IUnitOfWork
     {
 
-        private SQLiteConnection _connection;
-        private List<SQLiteCommand> _commands;
+        private string _connectionString;        
         private SQLiteRepositoryFactory _factory;
-        private Dictionary<Type, dynamic> _repositories;
-
-        internal SQLiteUoW(SQLiteConnection connection)
-        {        
-            _connection = connection;
-        }
-
-        public SQLiteUoW(SQLiteConnection connection, SQLiteRepositoryFactory factory)
+        private Dictionary<Guid, object> _repositories;
+        private List<SQLiteCommand> _commands;        
+        private Object thisLock;        
+       
+        public SQLiteUoW(string connectionString, SQLiteRepositoryFactory factory)
         {
-            _connection = connection;
+            _connectionString = connectionString;
             _factory = factory;
+            _repositories = new Dictionary<Guid, object>();
+            _commands = new List<SQLiteCommand>();
+            thisLock = new Object();            
         }
 
         internal void AddCommand(SQLiteCommand command)
@@ -31,10 +30,20 @@ namespace _3Ds.Core.SQLite
             _commands.Add(command);
         }
 
-        public IRepository<T> GetRepository<T>() where T : IEntity
-        {
-            return _factory.CreateRepository<T>(this);
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : IEntity
+        {            
+            var key = GetTypeKey<TEntity>();
+            if (!_repositories.ContainsKey(key))
+            {
+                _repositories[key] = _factory.CreateRepository<TEntity>(this);
+            }
+            return (IRepository<TEntity>)_repositories[key];
         }
+
+        private Guid GetTypeKey<T>()
+        {
+            return typeof(T).GUID;
+        }        
 
         public IEnumerable<Type> KnownTypes
         {
@@ -45,6 +54,12 @@ namespace _3Ds.Core.SQLite
         {
             try
             {
+                List<SQLiteCommand> commands;
+                lock (thisLock)
+                {
+                    commands = _commands;
+                    _commands = new List<SQLiteCommand>();
+                }
             }
             catch (Exception ex)
             {

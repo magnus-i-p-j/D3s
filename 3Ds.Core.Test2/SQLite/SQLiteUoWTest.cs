@@ -33,21 +33,21 @@ namespace _3Ds.Core.Test2
         [Test]
         public void Should_call_get_repository_on_factory()
         {
-            var factory = A.Fake<SQLiteRepositoryFactory>();
+            var factory = new SQLiteRepositoryFactory();            
             factory.ConfigureRepository<MockEntity>();
             var uow = new SQLiteUoW(null, factory);            
             var repo = uow.GetRepository<MockEntity>();
-            A.CallTo(() => factory.CreateRepository<MockEntity>(uow)).MustHaveHappened();            
+            Assert.That(repo, Is.InstanceOf<IRepository<MockEntity>>());
         }
 
         [Test]
         public void Should_call_get_repository_on_factory_once()
         {
-            var factory = A.Fake<SQLiteRepositoryFactory>();
+            var factory = new SQLiteRepositoryFactory();
+            factory.ConfigureRepository<MockEntity>();
             var uow = new SQLiteUoW(null, factory);
             var repo_1 = uow.GetRepository<MockEntity>();
-            var repo_2 = uow.GetRepository<MockEntity>();
-            A.CallTo(() => factory.CreateRepository<MockEntity>(uow)).MustHaveHappened(Repeated.Exactly.Once);
+            var repo_2 = uow.GetRepository<MockEntity>();            
             Assert.That(repo_1, Is.EqualTo(repo_2));
         }
         
