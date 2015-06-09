@@ -25,12 +25,20 @@ namespace _3Ds.Core.SQLite
             thisLock = new Object();            
         }
 
+        internal string ConnectionString
+        {
+            get
+            {
+                return _connectionString;
+            }
+        }
+
         internal void AddCommand(SQLiteCommand command)
         {
             _commands.Add(command);
         }
 
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : IEntity
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity
         {            
             var key = GetTypeKey<TEntity>();
             if (!_repositories.ContainsKey(key))

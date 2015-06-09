@@ -22,7 +22,7 @@ namespace _3Ds.Core
         public object Clone()
         {
             var clone = _inspector.CreateInstance();            
-            foreach (var property in _inspector.Properties)
+            foreach (var property in _inspector.AllProperties)
             {               
                 var getter = property.Getter;
                 var value = getter((T)this);

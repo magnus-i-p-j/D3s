@@ -12,19 +12,18 @@ namespace _3Ds.Utils.AutoType
     {
 
         private Lazy<Type> _type = new Lazy<Type>(() => typeof(TInstance));
+        private Lazy<InspectionResult> _inspectionResult;
 
-        private Lazy<Dictionary<string, PropertyDefinition<TInstance>>> _properties;
-
-        private Dictionary<string, PropertyDefinition<TInstance>> InspectType()
+        private InspectionResult InspectType()
         {
-            var definitions = new Dictionary<string, PropertyDefinition<TInstance>>();
-            var properties = Type.GetProperties();                   
+            var result = new InspectionResult();
+            result.TypeName = Type.Name;
+            var properties = Type.GetProperties();
             foreach (var property in properties)
-            {                
-                definitions.Add(property.Name, InspectProperty(property));
+            {
+                result[property.Name] = InspectProperty(property);
             }
-
-            return definitions;
+            return result;
         }
 
         private PropertyDefinition<TInstance> InspectProperty(PropertyInfo propertyInfo)
@@ -34,44 +33,50 @@ namespace _3Ds.Utils.AutoType
                 Name = propertyInfo.Name,
                 ValueType = propertyInfo.PropertyType,
                 Getter = obj => propertyInfo.GetGetMethod().Invoke(obj, null),
-                Setter = (obj,val) => propertyInfo.GetSetMethod().Invoke(obj, new object[]{val}),
+                Setter = (obj, val) => propertyInfo.GetSetMethod().Invoke(obj, new object[] { val }),
                 EqualTo = null
             };
             return definition;
         }
-        
+
+        private InspectionResult Result
+        {
+            get
+            {
+                return _inspectionResult.Value;
+            }
+        }
 
         public AutoTypeInspector()
         {
-            _properties = new Lazy<Dictionary<string, PropertyDefinition<TInstance>>>(InspectType);
+            _inspectionResult = new Lazy<InspectionResult>(InspectType);
         }
 
         public Type Type { get { return _type.Value; } }
 
         public TInstance CreateInstance(params object[] args)
         {
-            return (TInstance)Activator.CreateInstance(typeof(TInstance), args); 
+            return (TInstance)Activator.CreateInstance(typeof(TInstance), args);
         }
 
-        public List<PropertyDefinition<TInstance>> Properties
+        public string TypeName { get { return Result.TypeName; } }
+
+        public List<PropertyDefinition<TInstance>> AllProperties
         {
             get
             {
-                return _properties.Value.Values.ToList();
+                return Result.AllProperties;
             }
         }
 
-        private Dictionary<string, PropertyDefinition<TInstance>> PropertyDefinitions
+        public bool HasProperty(string name)
         {
-            get
-            {
-                return _properties.Value;
-            }
+            return Result.AllProperties.Any(p => p.Name == name);
         }
 
         public AutoTypeInspector<TInstance> OverrideProperty<TValue>(PropertyDefinition<TInstance> definition)
-        {            
-            PropertyDefinitions[definition.Name] = definition;
+        {
+            Result[definition.Name] = definition;
             return this;
         }
 
@@ -79,7 +84,8 @@ namespace _3Ds.Utils.AutoType
         {
             get
             {
-                return PropertyDefinitions.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Getter).ToList();
+                return Result.AllProperties
+                    .Select(p => p.Getter).ToList();
             }
         }
 
@@ -87,31 +93,56 @@ namespace _3Ds.Utils.AutoType
         {
             get
             {
-                return PropertyDefinitions.Select(kvp => ((PropertyDefinition<TInstance>)kvp.Value).Setter).ToList();
+                return Result.AllProperties
+                    .Select(p => p.Setter).ToList();
             }
         }
 
         public Func<TInstance, object> Getter(string name)
         {
-            PropertyDefinition<TInstance> definition;
-            PropertyDefinitions.TryGetValue(name, out definition);            
-            if (definition == null)
-            {
-                throw new AutoTypeInspectorException(String.Format("No getter found named {0}", name));
-            }
-
+            PropertyDefinition<TInstance> definition = Result[name];
             return definition.Getter;
         }
 
         public Action<TInstance, object> Setter(string name)
         {
-            PropertyDefinition<TInstance> definition;
-            PropertyDefinitions.TryGetValue(name, out definition);
-            if (definition == null)
-            {
-                throw new AutoTypeInspectorException(String.Format("No setter found named {0}", name));
-            }
+            PropertyDefinition<TInstance> definition = Result[name];
             return definition.Setter;
+        }
+
+        private class InspectionResult
+        {
+            private Dictionary<string, PropertyDefinition<TInstance>> _properties = 
+                new Dictionary<string,PropertyDefinition<TInstance>>();
+
+            public string TypeName { get; set; }
+            public string FullyQualifiedTypeName { get; set; }
+            public Guid Guid { get; set; }
+
+            public List<PropertyDefinition<TInstance>> AllProperties
+            {
+                get
+                {
+                    return _properties.Values.ToList();
+                }
+            }
+
+            public PropertyDefinition<TInstance> this[string propertyName]
+            {
+                get
+                {
+                    PropertyDefinition<TInstance> definition;
+                    _properties.TryGetValue(propertyName, out definition);
+                    if (definition == null)
+                    {
+                        throw new AutoTypeInspectorException(String.Format("No property found named {0}", propertyName));
+                    }
+                    return definition;
+                }
+
+                set { _properties[propertyName] = value; }
+            }
+
         }
 
     }

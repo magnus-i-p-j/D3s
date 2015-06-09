@@ -6,7 +6,7 @@ using System.Text;
 namespace _3Ds.Core
 {  
     public interface IRepository<T>
-        where T: IEntity
+        where T: class, IEntity
     {
         IEnumerable<T> All();
         T Find(Guid id);

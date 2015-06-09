@@ -6,7 +6,7 @@ using System.Text;
 namespace _3Ds.Core.SQLite
 {
     
-    public class SQLiteRepository<T> : IRepository<T> where T: IEntity
+    public class SQLiteRepository<T> : IRepository<T> where T: class, IEntity
     {
 
         private SQLiteUoW _uow;
