@@ -7,7 +7,7 @@ using _3Ds.Utils.AutoType;
 
 namespace _3Ds.Core.SQLite
 {
-    public class SQLiteDefaultRepository<T> : IRepository<T>
+    public class SQLiteDefaultRepository<T> : IRepository<T>, IAsyncRepository<T>
         where T: class, IEntity, new()
     {
         private SQLiteUoW _uow;

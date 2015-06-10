@@ -43,9 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAsyncRepository.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IWorkContext.cs" />
     <Compile Include="NoRepositoryFoundException.cs" />
     <Compile Include="Specification.cs" />
     <Compile Include="SQLite\SQLiteDefaultRepository.cs" />
