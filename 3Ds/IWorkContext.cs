@@ -8,7 +8,7 @@ namespace _3Ds.Core
 {
     public interface IWorkContext
     {
-        public string Name { get; }
-        public Guid Id { get; }
+        string Name { get; }
+        Guid Id { get; }
     }
 }

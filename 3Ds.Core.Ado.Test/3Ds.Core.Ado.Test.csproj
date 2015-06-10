@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{704AEB60-EB50-46AE-816C-FFB51E956545}</ProjectGuid>
+    <ProjectGuid>{E4C24DD4-437D-46C2-9AC4-D67AE84075D6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_3Ds.Core</RootNamespace>
-    <AssemblyName>3Ds</AssemblyName>
+    <RootNamespace>_3Ds.Core.Ado.Test</RootNamespace>
+    <AssemblyName>3Ds.Core.Ado.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>a5ea41f2</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>e0bdf79d</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,8 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper">
-      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\packages\FakeItEasy.1.25.2\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,23 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityView.cs" />
-    <Compile Include="IAsyncRepository.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="IWorkContext.cs" />
-    <Compile Include="NoRepositoryFoundException.cs" />
-    <Compile Include="Specification.cs" />
-    <Compile Include="UnitOfWorkException.cs" />
-    <Compile Include="ValueObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\3Ds.Utils\3Ds.Utils.csproj">
-      <Project>{3f810df3-7567-4f6a-af20-eee32a5a018c}</Project>
-      <Name>3Ds.Utils</Name>
-    </ProjectReference>
+    <Compile Include="SQLiteRepositoryTest.cs" />
+    <Compile Include="SQLiteUoWTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

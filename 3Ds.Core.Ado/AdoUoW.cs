@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _3Ds.Core.SQLite
-{
-    public class SQLiteUoW: IUnitOfWork
+{    
+
+    public class AdoUoW: IUnitOfWork
     {
 
-        private string _connectionString;        
-        private SQLiteRepositoryFactory _factory;
+        private string _connectionString;
+        private AdoRepositoryFactory _factory;
         private Dictionary<Guid, object> _repositories;
-        private List<SQLiteCommand> _commands;        
-        private Object thisLock;        
-       
-        public SQLiteUoW(string connectionString, SQLiteRepositoryFactory factory)
+        private List<Action<DbConnection>> _actions;        
+        private Object thisLock;
+
+        public AdoUoW(string connectionString, AdoRepositoryFactory factory)
         {
             _connectionString = connectionString;
             _factory = factory;
             _repositories = new Dictionary<Guid, object>();
-            _commands = new List<SQLiteCommand>();
+            _actions = new List<Action<DbConnection>>();
             thisLock = new Object();            
         }
 

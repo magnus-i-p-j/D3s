@@ -50,8 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SQLite\SQLiteRepositoryTest.cs" />
-    <Compile Include="SQLite\SQLiteUoWTest.cs" />
     <Compile Include="ValueObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

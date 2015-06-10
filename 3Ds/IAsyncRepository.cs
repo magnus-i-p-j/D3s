@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace _3Ds.Core
 {
-    interface IAsyncRepository<T>
+    public interface IAsyncRepository<T>
         where T : class, IEntity
     {
         IEnumerable<T> AsyncAll();
-        T AsyncFind(Guid id);
-        T AsyncFind(Specification spec);
+        EntityView<T> AsyncFind(Guid id);
+        EntityView<T> AsyncFind(Specification spec);
         void AsyncInsert(T entity);
         void AsyncDelete(T entity);
     }
