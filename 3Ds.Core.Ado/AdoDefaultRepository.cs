@@ -11,7 +11,7 @@ namespace _3Ds.Core.Ado
     public class AdoDefaultRepository<T> : IRepository<T>, IAsyncRepository<T>
         where T: class, IEntity, new()
     {
-        private AdoWorkContext _context;
+        private AdoUoW _uow;
         private AutoTypeInspector<T> _typeInspector;
 
         /// <summary>
@@ -20,35 +20,35 @@ namespace _3Ds.Core.Ado
         /// can be mapped.       
         /// </summary>
         /// <param name="uow"></param>
-        public AdoDefaultRepository(AdoWorkContext context)
+        public AdoDefaultRepository(AdoUoW context)
         {
-            this._context = context;
+            this._uow = context;
             this._typeInspector = new AutoTypeInspector<T>();
         }
 
-        public IEnumerable<T> All()
+        public virtual IEnumerable<T> All()
         {
-            DbConnection connection;
+            DbConnection connection = null;
             var result = new List<T>();
             try
             {
                 var all = "select * from {0}";               
-                connection = _context.OpenConnection();
+                connection = _uow.OpenConnection();
                 result = connection.Query<T>(String.Format(all, _typeInspector.TypeName)).ToList();
             }
             finally
             {
-                _context.CloseConnection(connection);
+                _uow.CloseConnection(connection);
             }
             return result;
         }
 
-        public T Find(Guid id)
+        public IEnumerable<T> Find(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public T Find(Specification spec)
+        public IEnumerable<T> Find(Specification spec)
         {
             throw new NotImplementedException();
         }
@@ -59,6 +59,31 @@ namespace _3Ds.Core.Ado
         }
 
         public void Delete(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> AsyncAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> AsyncFind(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> AsyncFind(Specification spec)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AsyncInsert(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AsyncDelete(T entity)
         {
             throw new NotImplementedException();
         }

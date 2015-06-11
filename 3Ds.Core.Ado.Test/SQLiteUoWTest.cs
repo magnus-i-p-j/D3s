@@ -1,5 +1,4 @@
-﻿using _3Ds.Core.SQLite;
-using FakeItEasy;
+﻿using FakeItEasy;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,4 @@
-﻿using _3Ds.Core.SQLite;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;

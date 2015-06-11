@@ -9,8 +9,8 @@ namespace _3Ds.Core
         where T: class, IEntity
     {
         IEnumerable<T> All();
-        EntityView<T> Find(Guid id);
-        EntityView<T> Find(Specification spec);
+        IEnumerable<T> Find(Guid id);
+        IEnumerable<T> Find(Specification spec);
         void Insert(T entity);
         void Delete(T entity);        
     }

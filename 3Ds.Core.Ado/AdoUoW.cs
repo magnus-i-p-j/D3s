@@ -5,46 +5,64 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _3Ds.Core.SQLite
+
+namespace _3Ds.Core.Ado
 {    
 
     public class AdoUoW: IUnitOfWork
     {
 
         private string _connectionString;
-        private AdoRepositoryFactory _factory;
+        private string _providerName;
+        private AdoRepositoryFactory _repositoryFactory;
+        private AdoProviderFactory _providerFactory;
         private Dictionary<Guid, object> _repositories;
         private List<Action<DbConnection>> _actions;        
         private Object thisLock;
 
-        public AdoUoW(string connectionString, AdoRepositoryFactory factory)
-        {
-            _connectionString = connectionString;
-            _factory = factory;
+        public AdoUoW(AdoProviderFactory providerFactory,
+            AdoRepositoryFactory repositoryFactory)
+        {            
+            _repositoryFactory = repositoryFactory;
             _repositories = new Dictionary<Guid, object>();
             _actions = new List<Action<DbConnection>>();
             thisLock = new Object();            
         }
-
-        internal string ConnectionString
+        
+        internal void AddAction(Action<DbConnection> action)
         {
-            get
+            _actions.Add(action);
+        }
+
+        internal DbConnection OpenConnection()
+        {
+            return _providerFactory.CreateConnection();
+        }
+
+        internal void CloseConnection(DbConnection connection)
+        {
+            if (connection != null)
             {
-                return _connectionString;
+                connection.Close();
             }
         }
 
-        internal void AddCommand(SQLiteCommand command)
+        public string Name
         {
-            _commands.Add(command);
+            get { throw new NotImplementedException(); }
         }
 
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity
+        public Guid Id
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity, new()
         {            
             var key = GetTypeKey<TEntity>();
             if (!_repositories.ContainsKey(key))
             {
-                _repositories[key] = _factory.CreateRepository<TEntity>(this);
+                _repositories[key] = _repositoryFactory.CreateRepository<TEntity>(this);
             }
             return (IRepository<TEntity>)_repositories[key];
         }
@@ -56,18 +74,18 @@ namespace _3Ds.Core.SQLite
 
         public IEnumerable<Type> KnownTypes
         {
-            get { return _factory.KnownTypes; }
+            get { return _repositoryFactory.KnownTypes; }
         }
 
         public void AcceptChanges()
         {
             try
             {
-                List<SQLiteCommand> commands;
+                List<Action<DbConnection>> actions;
                 lock (thisLock)
                 {
-                    commands = _commands;
-                    _commands = new List<SQLiteCommand>();
+                    actions = _actions;
+                    _actions = new List<Action<DbConnection>>();
                 }
             }
             catch (Exception ex)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace _3Ds.Core.SQLite
+namespace _3Ds.Core.Ado
 {
     public class AdoRepositoryFactory
     {
@@ -20,19 +20,19 @@ namespace _3Ds.Core.SQLite
         public void ConfigureRepository<TEntity>()
             where TEntity : class, IEntity, new()
         {
-            _repositories[GetTypeKey<TEntity>()] = uow => new SQLiteDefaultRepository<TEntity>(uow);
+            _repositories[GetTypeKey<TEntity>()] = uow => new AdoDefaultRepository<TEntity>(uow);
         }
 
         public void ConfigureRepository<TEntity, TRepository>()
-            where TEntity : class, IEntity
-            where TRepository : SQLiteRepository<TEntity>
+            where TEntity : class, IEntity, new()
+            where TRepository : AdoDefaultRepository<TEntity>
         {
             _repositories[GetTypeKey<TEntity>()] =
                 uow => Activator.CreateInstance(typeof(TRepository), new Object[] { uow });
         }
 
-        public IRepository<TEntity> CreateRepository<TEntity>(SQLiteUoW uow)
-             where TEntity : class, IEntity
+        public IRepository<TEntity> CreateRepository<TEntity>(AdoUoW uow)
+             where TEntity : class, IEntity, new()
         {
             var key = GetTypeKey<TEntity>();
             if (!_repositories.ContainsKey(key))

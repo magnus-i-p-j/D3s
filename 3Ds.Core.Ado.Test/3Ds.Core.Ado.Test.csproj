@@ -56,6 +56,16 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3Ds.Core.Ado\3Ds.Core.Ado.csproj">
+      <Project>{de0a2151-4ec6-4430-bd84-450d088a3f44}</Project>
+      <Name>3Ds.Core.Ado</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\3Ds\3Ds.Core.csproj">
+      <Project>{704aeb60-eb50-46ae-816c-ffb51e956545}</Project>
+      <Name>3Ds.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
