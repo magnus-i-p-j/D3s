@@ -38,7 +38,7 @@ namespace _3Ds.Core.Ado
             }
             finally
             {
-                _uow.CloseConnection(connection);
+                _uow.CloseConnection();
             }
             return result;
         }

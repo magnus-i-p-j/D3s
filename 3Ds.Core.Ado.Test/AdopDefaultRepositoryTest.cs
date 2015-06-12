@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using _3Ds.Core.Ado;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -6,38 +7,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _3Ds.Core.Test2.SQLite
+namespace _3Ds.Core.Test2.Ado
 {
     [TestFixture]
-    public class SQLiteDefaultRepositoryTest
+    public class AdopDefaultRepositoryTest
     {
 
         public SQLiteConnection Connection { get; set; }
-        public SQLiteUoW UoW { get; set; }
-        public string ConnectionString { get; set; }
+        public string ConnectionString { get { return "FullUri=file::memory:?cache=shared"; } }// ":memory:?cache=shared"; } }
+
+        public AdoUoW UoW { get; set; }
 
         public class MockEntity : IEntity
         {
             public Guid Id { get; set; }
+            public int AnInt { get; set; }
+            public string AString { get; set; }
         }
 
         [SetUp]
         public void SetUp()
         {
-            var repositoryFactory = new SQLiteRepositoryFactory();
-            repositoryFactory.ConfigureRepository<MockEntity>();
-            //ConnectionString = "Data Source=:memory:";
+            AdoProviderFactory.RegisterDbProvider(
+                "System.Data.SQLite", ".Net Framework Data Provider for SQLite",
+                "SQLite Data Provider",
+                "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
+
+            var providerFactory = new AdoProviderFactory(
+                ConnectionString,
+                "System.Data.SQLite");
             
-            ConnectionString = "FullUri=file::memory:?cache=shared";
+            var repositoryFactory = new AdoRepositoryFactory();
+            repositoryFactory.ConfigureRepository<MockEntity>();
+
+            UoW = new AdoUoW(providerFactory, repositoryFactory);
+            
             Connection = new SQLiteConnection(ConnectionString);
-            Connection.Open();
-            UoW = new SQLiteUoW(ConnectionString, repositoryFactory);
+            Connection.Open();            
             AddEntities();
         }
 
         private void AddEntities()
         {
-            var table = "create table if not exists MockEntity (Id BLOB, AnInt INTEGER, AString TEXT)";
+            var table = "create table if not exists MockEntity (Id GUID, AnInt INTEGER, AString TEXT)";
             var addTable = new SQLiteCommand
             {
                 Connection = Connection,

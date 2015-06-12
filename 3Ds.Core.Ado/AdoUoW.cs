@@ -11,18 +11,19 @@ namespace _3Ds.Core.Ado
 
     public class AdoUoW: IUnitOfWork
     {
-
-        private string _connectionString;
-        private string _providerName;
         private AdoRepositoryFactory _repositoryFactory;
         private AdoProviderFactory _providerFactory;
         private Dictionary<Guid, object> _repositories;
         private List<Action<DbConnection>> _actions;        
         private Object thisLock;
 
+        private DbConnection _connection;
+
         public AdoUoW(AdoProviderFactory providerFactory,
             AdoRepositoryFactory repositoryFactory)
-        {            
+        {
+            Id = Guid.NewGuid();
+            _providerFactory = providerFactory;
             _repositoryFactory = repositoryFactory;
             _repositories = new Dictionary<Guid, object>();
             _actions = new List<Action<DbConnection>>();
@@ -36,25 +37,28 @@ namespace _3Ds.Core.Ado
 
         internal DbConnection OpenConnection()
         {
-            return _providerFactory.CreateConnection();
+            CloseConnection();
+            _connection = _providerFactory.CreateConnection();
+            _connection.Open();
+            return _connection;
         }
 
-        internal void CloseConnection(DbConnection connection)
+        internal void CloseConnection()
         {
-            if (connection != null)
+            if (_connection != null)
             {
-                connection.Close();
+                _connection.Close();
             }
-        }
+        }        
 
         public string Name
         {
-            get { throw new NotImplementedException(); }
+            get; set;
         }
 
         public Guid Id
         {
-            get { throw new NotImplementedException(); }
+            get; private set;
         }
 
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity, new()
