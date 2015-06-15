@@ -16,8 +16,12 @@ namespace _3Ds.Core.Test2
 
         public class MockEntity : IEntity
         {
-
             public Guid Id { get; set; }
+
+            public bool Equals(IEntity other)
+            {
+                return Id == other.Id;
+            }
         }
 
 
@@ -50,6 +54,18 @@ namespace _3Ds.Core.Test2
             var repo_2 = uow.GetRepository<MockEntity>();            
             Assert.That(repo_1, Is.EqualTo(repo_2));
         }
-        
+
+        [Test]
+        public void Should_locate_repository_by_type()
+        {
+            Assert.That(false, Is.True);
+        }
+
+        [Test]
+        public void Should_locate_repository_by_interface()
+        {
+            Assert.That(false, Is.True);
+        }
+
     }
 }

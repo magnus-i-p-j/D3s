@@ -16,15 +16,10 @@ namespace _3Ds.Core
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public EntityView(IEnumerable<T> entities)
+        public EntityView(Specification<T> set)
         {
             throw new NotImplementedException();
-        }
-
-        public EntityView(Specification specification)
-        {
-            throw new NotImplementedException();
-        }
+        }        
 
         public IEnumerator<T> GetEnumerator()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,14 +12,14 @@ namespace _3Ds.Core
     {
 
         public DateTime TimeStamp { get; set; }
-        public Guid Id { get; set; }
+        public Guid Id { get; set; }        
 
         public IEnumerator<T> GetEnumerator()
         {
             throw new NotImplementedException();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

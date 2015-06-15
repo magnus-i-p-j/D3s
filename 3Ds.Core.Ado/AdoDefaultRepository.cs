@@ -43,12 +43,25 @@ namespace _3Ds.Core.Ado
             return result;
         }
 
-        public IEnumerable<T> Find(Guid id)
+        public T Find(Guid id)
         {
-            throw new NotImplementedException();
+            DbConnection connection = null;
+            T result = null;
+            try
+            {
+                var all = "select * from {0} where Id = '{1}'";
+                connection = _uow.OpenConnection();
+                result = connection.Query<T>(String.Format(all, _typeInspector.TypeName, id))
+                    .SingleOrDefault();
+            }
+            finally
+            {
+                _uow.CloseConnection();
+            }
+            return result;
         }
 
-        public IEnumerable<T> Find(Specification spec)
+        public IEnumerable<T> Find(Specification<T> spec)
         {
             throw new NotImplementedException();
         }
@@ -68,12 +81,12 @@ namespace _3Ds.Core.Ado
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> AsyncFind(Guid id)
+        public T AsyncFind(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> AsyncFind(Specification spec)
+        public IEnumerable<T> AsyncFind(Specification<T> spec)
         {
             throw new NotImplementedException();
         }

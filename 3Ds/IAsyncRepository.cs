@@ -10,8 +10,8 @@ namespace _3Ds.Core
         where T : class, IEntity
     {
         IEnumerable<T> AsyncAll();
-        IEnumerable<T> AsyncFind(Guid id);
-        IEnumerable<T> AsyncFind(Specification spec);
+        T AsyncFind(Guid id);
+        IEnumerable<T> AsyncFind(Specification<T> spec);
         void AsyncInsert(T entity);
         void AsyncDelete(T entity);
     }

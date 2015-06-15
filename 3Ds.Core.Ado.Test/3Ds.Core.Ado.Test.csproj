@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AdopDefaultRepositoryTest.cs" />
+    <Compile Include="AdoDefaultRepositoryTest.cs" />
     <Compile Include="AdoUoWTest.cs" />
   </ItemGroup>
   <ItemGroup>
