@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace _3Ds.Core
 {
     public class EntityView<T> : IEnumerable<T>, INotifyPropertyChanged, INotifyCollectionChanged
-        where T: IEntity
+        where T : class, IEntity
     {
 
         public event PropertyChangedEventHandler PropertyChanged;

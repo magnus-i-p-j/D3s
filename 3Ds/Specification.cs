@@ -6,22 +6,193 @@ using System.Text;
 
 namespace _3Ds.Core
 {
-    public class Specification<T> where T: class
+    
+    public interface ISpecification
     {
-        private AutoTypeInspector<T> _typeInspector;
-
-        public Specification()
-        {
-            this._typeInspector = new AutoTypeInspector<T>();
-        }
-
-        public Func<TProperty, bool> this<TProperty>[string name]
-        {
-            get;
-            set;
-        }
-
-
+        bool IsSatisfiedBy(IEntity entity);
     }
+
+    public class Specification<TEntity> : ISpecification
+        where TEntity : class, IEntity
+    {
+
+        private ISpecification _property;
+        private ISpecification _conjunction;
+        
+        public PropertySpecification<TEntity, TProperty> Property<TProperty>(
+            Func<TEntity, TProperty> selector)
+             where TProperty: IComparable<TProperty>
+        {
+            _property = new PropertySpecification<TEntity, TProperty>(this, selector);
+            return (PropertySpecification<TEntity, TProperty>)_property;
+        }
+
+        public Specification<TEntity> And()
+        {
+            Specification<TEntity> other = new Specification<TEntity>();
+            _conjunction = new AndSpecification<TEntity>(this, other);
+            return other;
+        }
+
+        public Specification<TEntity> And(Specification<TEntity> other)
+        {
+            _conjunction = new AndSpecification<TEntity>(this, other);
+            return this;
+        }
+
+        public Specification<TEntity> Or()
+        {
+            Specification<TEntity> other = new Specification<TEntity>();
+            _conjunction = new OrSpecification<TEntity>(this, other);
+            return other;
+        }
+
+        public Specification<TEntity> Or(Specification<TEntity> other)
+        {
+            _conjunction = new OrSpecification<TEntity>(this, other);
+            return this;
+        }
+
+        public Specification<TEntity> Not()
+        {
+            Specification<TEntity> other = new Specification<TEntity>();
+            _conjunction = new NotSpecification<TEntity>(other);
+            return other;
+        }               
+
+        public bool IsSatisfiedBy(IEntity ientity)
+        {
+            TEntity entity = ientity as TEntity;
+            if (entity == null)
+            {
+                return false;
+            }
+            return _property.IsSatisfiedBy(entity);
+        }
+        
+    }
+
+
+
+    public class PropertySpecification<TEntity, TProperty> : ISpecification
+        where TEntity : class, IEntity
+        where TProperty : IComparable<TProperty>
+    {
+
+        private Func<TEntity, TProperty> _selector;        
+        private Func<TProperty, bool> _evaluate;
+        private Specification<TEntity> _parent;
+        
+        internal PropertySpecification(Specification<TEntity> parent, 
+            Func<TEntity, TProperty> selector)
+        {
+            _parent = parent;
+            _selector = selector;
+        }
+
+        public bool IsSatisfiedBy(IEntity ientity)
+        {
+            TEntity entity = ientity as TEntity;
+            if (entity == null)
+            {
+                return false;         
+            }
+            var value = _selector(entity);
+            return _evaluate(value);
+        }
+
+        public Specification<TEntity> EqualTo(TProperty other)
+        {            
+            _evaluate = value => value.CompareTo(other) == 0;
+            return _parent;
+        }
+
+        public Specification<TEntity> NotEqualTo(TProperty other)
+        {
+            _evaluate = value => value.CompareTo(other) != 0;
+            return _parent;
+        }
+
+        public Specification<TEntity> LessThan(TProperty other)
+        {
+            _evaluate = value => value.CompareTo(other) < 0;
+            return _parent;
+        }
+
+        public Specification<TEntity> GreaterThan(TProperty other)
+        {
+            _evaluate = value => value.CompareTo(other) > 0;
+            return _parent;
+        }
+    }
+
+
+    public class AndSpecification<TEntity> : ISpecification
+        where TEntity : class, IEntity
+    {
+        public Specification<TEntity> Lhs { get; private set; }
+        public Specification<TEntity> Rhs { get; private set; }
+
+        public AndSpecification(Specification<TEntity> lhs, Specification<TEntity> rhs)
+        {
+            Lhs = lhs;
+            Rhs = rhs;
+        }
+       
+        public bool IsSatisfiedBy(IEntity ientity)
+        {
+            TEntity entity = ientity as TEntity;
+            if (entity == null)
+            {
+                return false;
+            }
+            return Lhs.IsSatisfiedBy(entity) && Rhs.IsSatisfiedBy(entity);
+        }
+    }
+
+    public class OrSpecification<TEntity> : ISpecification
+        where TEntity : class, IEntity
+    {
+        public Specification<TEntity> Lhs { get; private set; }
+        public Specification<TEntity> Rhs { get; private set; }
+
+        public OrSpecification(Specification<TEntity> lhs, Specification<TEntity> rhs)
+        {
+            Lhs = lhs;
+            Rhs = rhs;
+        }
+
+        public bool IsSatisfiedBy(IEntity ientity)
+        {
+            TEntity entity = ientity as TEntity;
+            if (entity == null)
+            {
+                return false;
+            }
+            return Lhs.IsSatisfiedBy(entity) || Rhs.IsSatisfiedBy(entity);
+        }
+    }
+
+    public class NotSpecification<TEntity> : ISpecification
+        where TEntity : class, IEntity
+    {
+        public Specification<TEntity> Lhs { get; private set; }
+
+        public NotSpecification(Specification<TEntity> lhs)
+        {
+            Lhs = lhs;            
+        }
+
+        public bool IsSatisfiedBy(IEntity ientity)
+        {
+            TEntity entity = ientity as TEntity;
+            if (entity == null)
+            {
+                return false;
+            }
+            return !Lhs.IsSatisfiedBy(entity);
+        }
+    }
+
     
 }

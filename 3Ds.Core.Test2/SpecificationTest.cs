@@ -28,22 +28,31 @@ namespace _3Ds.Core.Test2
             }
 
         }
-
-
+       
         [Test]
-        public void Should_keep_a_list_of_specified_properties()
+        public void Should_call_is_satisfied_recursively()
         {
-            var spec = new Specification<MockEntity>();
-            spec["AnInt"] = i => i < 10;
-            Assert.That(spec.Details.Count, Is.EqualTo(0));
+            var spec = new Specification<MockEntity>()
+                .Property(e => e.AnInt).EqualTo(3)
+                .And().Property(e => e.AString).LessThan("abc");
+
+            var entity = new MockEntity
+            {
+                AnInt = 4,
+                AString = "ddd"
+            };
+            Assert.That(spec.IsSatisfiedBy(entity), Is.True);
         }
 
-        [Test]
-        public void Should_throw_an_exception_when_specifying_unknown_property()
+         [Test]
+        public void Should_call_is_satisfied_in_correct_nested_order()
         {
-            var spec = new Specification<MockEntity>();
-            spec["AnInt"] = i => i < 10;
-            Assert.That(spec.Details.Count, Is.EqualTo(0));
+            var spec = new Specification<MockEntity>()
+                .Property(e => e.AnInt).EqualTo(3)
+                .And().Property(e => e.AString).LessThan("abc");
+           
+            //spec["AnInt"] = i => i < 10;
+            //Assert.That(spec.Details.Count, Is.EqualTo(0));
         }
 
 
