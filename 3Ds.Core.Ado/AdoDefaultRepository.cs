@@ -61,7 +61,7 @@ namespace _3Ds.Core.Ado
             return result;
         }
 
-        public IEnumerable<T> Find(Specification<T> spec)
+        public IEnumerable<T> Find(ISpecification<T> spec)
         {
             throw new NotImplementedException();
         }
@@ -86,7 +86,7 @@ namespace _3Ds.Core.Ado
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> AsyncFind(Specification<T> spec)
+        public IEnumerable<T> AsyncFind(ISpecification<T> spec)
         {
             throw new NotImplementedException();
         }
@@ -97,6 +97,18 @@ namespace _3Ds.Core.Ado
         }
 
         public void AsyncDelete(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public IEnumerable<T> Find(Specification<T> spec)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public IEnumerable<T> AsyncFind(Specification<T> spec)
         {
             throw new NotImplementedException();
         }

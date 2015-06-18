@@ -12,7 +12,18 @@ namespace _3Ds.Core
         bool IsSatisfiedBy(IEntity entity);
     }
 
-    public class Specification<TEntity> : ISpecification
+    public interface ISpecification<TEntity>
+    {
+        bool IsSatisfiedBy(TEntity entity);
+    }
+
+    public interface IConjunction<TEntity>
+        where TEntity : class, IEntity
+    {
+        Specification<TEntity> And();
+    }
+
+    public class Specification<TEntity> : ISpecification, ISpecification<TEntity>, IConjunction<TEntity>
         where TEntity : class, IEntity
     {
 
@@ -27,13 +38,13 @@ namespace _3Ds.Core
             return (PropertySpecification<TEntity, TProperty>)_property;
         }
 
-        public Specification<TEntity> And()
+        Specification<TEntity> IConjunction<TEntity>.And()
         {
             Specification<TEntity> other = new Specification<TEntity>();
             _conjunction = new AndSpecification<TEntity>(this, other);
             return other;
         }
-
+        /*
         public Specification<TEntity> And(Specification<TEntity> other)
         {
             _conjunction = new AndSpecification<TEntity>(this, other);
@@ -69,7 +80,17 @@ namespace _3Ds.Core
             }
             return _property.IsSatisfiedBy(entity);
         }
-        
+        */
+
+        public bool IsSatisfiedBy(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSatisfiedBy(IEntity entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
@@ -101,25 +122,25 @@ namespace _3Ds.Core
             return _evaluate(value);
         }
 
-        public Specification<TEntity> EqualTo(TProperty other)
+        public IConjunction<TEntity> EqualTo(TProperty other)
         {            
             _evaluate = value => value.CompareTo(other) == 0;
             return _parent;
         }
 
-        public Specification<TEntity> NotEqualTo(TProperty other)
+        public IConjunction<TEntity> NotEqualTo(TProperty other)
         {
             _evaluate = value => value.CompareTo(other) != 0;
             return _parent;
         }
 
-        public Specification<TEntity> LessThan(TProperty other)
+        public IConjunction<TEntity> LessThan(TProperty other)
         {
             _evaluate = value => value.CompareTo(other) < 0;
             return _parent;
         }
 
-        public Specification<TEntity> GreaterThan(TProperty other)
+        public IConjunction<TEntity> GreaterThan(TProperty other)
         {
             _evaluate = value => value.CompareTo(other) > 0;
             return _parent;
